@@ -16,8 +16,7 @@ String base58CheckEncode(int version, Uint8List data) {
 
 Uint8List base58CheckDecode(String encodedData) {
   Base58CheckPayload payload = _b58CheckDecoder.convert(encodedData);
-  return Uint8List.fromList(
-      payload.payload.getRange(0, payload.payload.length - 1).toList());
+  return Uint8List.fromList(payload.payload);
 }
 
 Uint8List base58Decode(String encodedData) {
