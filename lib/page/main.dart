@@ -1,8 +1,16 @@
+import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:convert/convert.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
+import 'package:neofs_app/grpc/accounting.dart';
+import 'package:neofs_app/crypto/signature.dart';
+import 'package:neofs_app/grpc/client.dart';
+import 'package:neofs_app/neofs_api/accounting/types.pb.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../neo.dart';
 import 'new_account.dart';
 
 class MainPage extends StatefulWidget {
@@ -13,8 +21,10 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  String _address = "";
-  int _selectedIndex = 1;
+  var _address = "";
+  var _selectedIndex = 1;
+  var _sideChainBalance = 0.0;
+  static AccountingClient? _accountingClient;
 
   @override
   void dispose() {
@@ -22,21 +32,35 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
+  static Future<Decimal> _balanceOf(NeoFSSuite suite) async {
+    return (suite.client as AccountingClient)
+        .balance(address: suite.arg as String);
+  }
+
   @override
   void initState() {
     super.initState();
-    () async {
-      var prefs = await SharedPreferences.getInstance();
-      if (prefs.containsKey("wif")) {
-        _address = prefs.getString("address")!;
-        setState(() {});
-        return;
-      }
-      Navigator.of(context).pop();
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const ImportAccountPage()),
-      );
-    }();
+    _initWalletStatus();
+  }
+
+  Future<void> _initWalletStatus() async {
+    var prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("wif")) {
+      _address = prefs.getString("address")!;
+      setState(() {});
+      var _privateKey = prefs.getString("privateKey")!;
+      _accountingClient =
+          AccountingClient(hex.decode(_privateKey) as Uint8List);
+      var balance =
+          await compute(_balanceOf, NeoFSSuite(_accountingClient!, _address));
+      _sideChainBalance = balance.value.toInt() / pow(10, balance.precision);
+      setState(() {});
+      return;
+    }
+    Navigator.of(context).pop();
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const ImportAccountPage()),
+    );
   }
 
   @override
@@ -89,23 +113,11 @@ class _MainPageState extends State<MainPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  TextButton(
-                    child: const Text('GAS: 12.0'),
-                    onPressed: () async {
-                      (await SharedPreferences.getInstance()).remove("wif");
-                    },
-                  ),
                   const SizedBox(width: 8),
                   TextButton(
-                    child: const Text('Side Chain GAS: 8.9877'),
-                    onPressed: () async {
-
-                      var acc = NeoAccount.newAccount(password: "12345678");
-
-                      print(acc);
-
-                      print(NeoAccount.fromWIF(acc.encryptedWIF!, password: "12345678").address);
-                    },
+                    child:
+                        Text("Side Chain GAS: " + _sideChainBalance.toString()),
+                    onPressed: () {},
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -113,6 +125,15 @@ class _MainPageState extends State<MainPage> {
             ],
           ),
         ),
+        Center(
+          child: ElevatedButton(
+            child: const Text("Change account"),
+            onPressed: () async {
+              ((await SharedPreferences.getInstance()).remove("wif"));
+              _initWalletStatus();
+            },
+          ),
+        )
       ],
     );
   }

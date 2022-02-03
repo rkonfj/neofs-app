@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -106,8 +107,10 @@ class _ImportAccountPageState extends State<ImportAccountPage> {
     var prefs = await SharedPreferences.getInstance();
     try {
       NeoAccount neoAccount = await provideNeoAccount();
+      log(neoAccount.toString());
       prefs.setString("wif", neoAccount.wif!);
       prefs.setString("address", neoAccount.address!);
+      prefs.setString("privateKey", neoAccount.key!);
     } catch (e) {
       Fluttertoast.showToast(
           msg: e.toString(),
