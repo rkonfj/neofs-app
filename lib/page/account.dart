@@ -5,21 +5,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:neofs_app/neo.dart';
 import 'package:neofs_app/page/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../neo.dart';
 
-class ImportAccountPage extends StatefulWidget {
-  const ImportAccountPage({Key? key}) : super(key: key);
+class AccountPage extends StatefulWidget {
+  const AccountPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _ImportAccountPageState();
-  }
+  State<StatefulWidget> createState() =>  _AccountPageState();
 }
 
-class _ImportAccountPageState extends State<ImportAccountPage> {
+class _AccountPageState extends State<AccountPage> {
   bool _showImportPassword = false;
   final TextEditingController _wifController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

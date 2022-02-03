@@ -32,4 +32,5 @@ class AccountingClient extends NeofsNodeClient {
     // TODO check response
     return res.body.balance;
   }
+
 }

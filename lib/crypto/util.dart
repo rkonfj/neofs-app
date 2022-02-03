@@ -8,6 +8,7 @@ var _alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 var _b58CheckEncoder = Base58CheckEncoder(_alphabet);
 var _b58CheckDecoder = Base58CheckDecoder(_alphabet);
 var _b58Decoder = Base58Decoder(_alphabet);
+var _b58Encoder = Base58Encoder(_alphabet);
 var sha256 = SHA256Digest();
 
 String base58CheckEncode(int version, Uint8List data) {
@@ -21,4 +22,8 @@ Uint8List base58CheckDecode(String encodedData) {
 
 Uint8List base58Decode(String encodedData) {
   return Uint8List.fromList(_b58Decoder.convert(encodedData));
+}
+
+String base58Encode(Uint8List data) {
+  return _b58Encoder.convert(data);
 }
