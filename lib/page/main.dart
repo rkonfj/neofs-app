@@ -101,7 +101,7 @@ class _MainPageState extends State<MainPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        const Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 26)),
         Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -125,6 +125,7 @@ class _MainPageState extends State<MainPage> {
             ],
           ),
         ),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
         Center(
           child: ElevatedButton(
             child: const Text("Change account"),

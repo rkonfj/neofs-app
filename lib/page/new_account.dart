@@ -56,6 +56,7 @@ class _ImportAccountPageState extends State<ImportAccountPage> {
                               },
                             ),
                             TextField(
+                              obscureText: true,
                               controller: _passwordController,
                               decoration: InputDecoration(
                                 labelText: "Password",
