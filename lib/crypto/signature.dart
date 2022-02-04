@@ -41,7 +41,6 @@ Uint8List ecdsaSign(Uint8List privateKey, Uint8List data) {
   try {
     return _ecdsaSign(privateKey, data);
   } catch (e) {
-    print(e.toString());
     return ecdsaSign(privateKey, data);
   }
 }

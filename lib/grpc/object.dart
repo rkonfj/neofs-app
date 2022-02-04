@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:neofs_app/grpc/client.dart';
 import 'package:neofs_app/neofs_api/object/service.pbgrpc.dart';
+import 'package:neofs_app/neofs_api/object/types.pbenum.dart';
 import 'package:neofs_app/neofs_api/refs/types.pb.dart';
 
 class ObjectClient extends NeofsNodeClient {
@@ -11,7 +14,11 @@ class ObjectClient extends NeofsNodeClient {
 
   Future<List<ObjectID>> search(ContainerID containerID) async {
     GrpcRequest req =
-        buildRequest(SearchRequest_Body(containerId: containerID));
+        buildRequest(SearchRequest_Body(containerId: containerID, filters: [
+      SearchRequest_Body_Filter(
+        key: "\$Object:ROOT",
+      )
+    ]));
     var resStream = _newOsc.search(SearchRequest(
       body: req.body as SearchRequest_Body,
       metaHeader: req.metaHeader,

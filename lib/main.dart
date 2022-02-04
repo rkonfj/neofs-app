@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neofs_app/page/main.dart';
 
-
 void main() {
   runApp(const NeoFSApp());
 }
@@ -20,4 +19,3 @@ class NeoFSApp extends StatelessWidget {
     );
   }
 }
-
